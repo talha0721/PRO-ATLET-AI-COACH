@@ -3,100 +3,87 @@ import google.generativeai as genai
 import random
 import os
 
-# --- 1. ADIM: VİTRİN AYARLARI (MUTLAKA EN ÜSTTE OLMALI) ---
+# --- 1. SİSTEM AYARLARI (İLK SIRADA OLMALI) ---
 st.set_page_config(
     page_title="Pro-Atlet AI Coach",
     page_icon="🏆",
     layout="centered"
 )
 
-# --- 2. ADIM: API ANAHTARI VE DİĞERLERİ ---
+# --- 2. API VE GÜVENLİK ---
 API_KEY = st.secrets["GEMINI_API_KEY"]
 
-# Tasarım - Profesyonel Koyu Tema (Buradan sonrası aynı devam ediyor...)
+# --- 3. TASARIM VE STİL (TEK BLOK) ---
 st.markdown("""
-    <style>
-st.markdown("""
-    <style>
+<style>
     .main { background-color: #0e1117; color: #ffffff; }
     .stButton>button { 
         width: 100%; 
         background-color: #e63946; 
         color: white; 
         border-radius: 10px; 
-        height: 3.8em; 
+        height: 3.5em; 
         font-weight: bold; 
-        font-size: 1.1em;
         border: none; 
         transition: 0.3s ease;
     }
-    .stButton>button:hover { background-color: #f1faee; color: #1d3557; transform: translateY(-2px); }
-    </style>
-    """, unsafe_allow_html=True)
+    .stButton>button:hover { background-color: #f1faee; color: #1d3557; }
+</style>
+""", unsafe_allow_html=True)
 
-# Üst Bölüm: İkonlar ve Ana Görsel
-col_left, col_mid, col_right = st.columns([1, 4, 1])
+# --- 4. ÜST BÖLÜM: VİTRİN ---
+col_l, col_m, col_r = st.columns([1, 4, 1])
+with col_l:
+    st.markdown("<h2 style='text-align:center;'>🦅</h2><p style='text-align:center;color:#aaa;font-size:0.7em;'>GÜÇ</p>", unsafe_allow_html=True)
 
-with col_left:
-    st.markdown("<h1 style='text-align: center; margin-top: 50px;'>🦅</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #aaa; font-size: 0.8em;'>GÜÇ</p>", unsafe_allow_html=True)
-
-with col_mid:
+with col_m:
     if os.path.exists('hero_athlete.png'):
         st.image('hero_athlete.png', use_container_width=True)
     else:
-        st.warning("⚠️ 'hero_athlete.png' bulunamadı.")
+        st.info("🎯 Pro-Atlet AI Coaching System")
 
-with col_right:
-    st.markdown("<h1 style='text-align: center; margin-top: 50px;'>🦉</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #aaa; font-size: 0.8em;'>BİLGELİK</p>", unsafe_allow_html=True)
+with col_r:
+    st.markdown("<h2 style='text-align:center;'>🦉</h2><p style='text-align:center;color:#aaa;font-size:0.7em;'>BİLGELİK</p>", unsafe_allow_html=True)
 
-# Stoacı Motivasyon
-motivasyon_arsivi = [
+# --- 5. MENTALİTE ---
+motivasyon = [
     "“Kendini fethetmeyen insan, hiçbir şeyi fethedemez.”",
     "“Bedeninin nelere muktedir olduğunu görmeden yaşlanmak bir trajedidir.” — Socrates",
-    "“Şampiyonlar, kimsenin bakmadığı o karanlık saatlerde doğar.”",
-    "“Antrenman yapmadığın her saniye, rakibin çalışıyor.”",
-    "“Zorluklar zihni güçlendirir, tıpkı çalışmanın bedeni güçlendirmesi gibi.” — Seneca",
     "“Disiplin, ne istediğinle şu an ne istediğin arasındaki köprüdür.”",
-    "“Ringde seni ayakta tutan şey, karanlık odada yaptıklarındır.”",
     "“Konfor alanı, karakterin öldüğü yerdir.”"
 ]
-st.info(f"⚡ **Günün Mentalitesi:** {random.choice(motivasyon_arsivi)}")
+st.info(f"⚡ **Günün Mentalitesi:** {random.choice(motivasyon)}")
 
+# --- 6. GİRİŞ ALANLARI ---
 st.title("🏆 PRO-ATLET AI COACH")
 st.markdown("---")
 
-col1, col2 = st.columns(2)
-
-with col1:
+c1, c2 = st.columns(2)
+with c1:
     branslar = st.multiselect("🏊‍♂️ Branşların", ["Boks", "Yüzme", "Güreş", "Fitness", "Basketbol", "Voleybol"])
     hedef = st.selectbox("💪 Odak Bölgesi", ["Biceps", "Triceps", "Geniş Omuz", "Güçlü Sırt", "Parçalı Karın", "Atletik Bacak"])
 
-with col2:
+with c2:
     sakatlik = st.selectbox("🚑 Sakatlık Durumu", ["Yok", "Ayak Bileği", "Omuz", "Bel", "Diz", "El Bileği"])
     ek_not = st.text_input("📝 AI'ya özel notun (opsiyonel)")
 
-# Analiz Butonu
+# --- 7. ANALİZ MANTIK (LOGIC) ---
 if st.button("🔥 SİSTEMİ ÇALIŞTIR VE ANALİZ ET"):
     if not branslar:
-        st.error("Lütfen en az bir branş seç.")
+        st.error("Lütfen en az bir branş seçin.")
     else:
         with st.spinner('🎯 AI Analiz Ediyor...'):
             try:
                 genai.configure(api_key=API_KEY)
-                # Model seçimi
-                model_list = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-                selected_model = model_list[0] if model_list else 'gemini-1.5-flash'
-                model = genai.GenerativeModel(selected_model)
+                model = genai.GenerativeModel('gemini-1.5-flash')
                 
-                prompt = f"Sporcu: {branslar}. Hedef: {hedef}. Sakatlık: {sakatlik}. Not: {ek_not}. Profesyonel antrenman programı yaz."
+                prompt = f"""Profesyonel bir spor koçu gibi davran. 
+                Branşlar: {branslar}. Hedef Bölge: {hedef}. Sakatlık: {sakatlik}. Notlar: {ek_not}. 
+                Buna uygun bilimsel temelli bir antrenman programı yaz."""
+                
                 response = model.generate_content(prompt)
-                
                 st.success("✅ ANALİZ TAMAMLANDI")
                 st.markdown("### 📋 Önerilen Reçete")
                 st.markdown(response.text)
             except Exception as e:
-                st.error(f"Sistem Hatası: {e}")
-
-st.markdown("---")
+                st.error(f"Sistem Hatası: API Anahtarını kontrol et veya limitleri bekle. (Hata: {e})")
