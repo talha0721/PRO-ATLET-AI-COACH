@@ -3,11 +3,19 @@ import google.generativeai as genai
 import random
 import os
 
-# --- API ANAHTARI ---
-API_KEY = st.secrets["GEMINI_API_KEY"]
-st.set_page_config(page_title="Pro-Atlet AI Coach", layout="centered")
+# --- 1. ADIM: VİTRİN AYARLARI (MUTLAKA EN ÜSTTE OLMALI) ---
+st.set_page_config(
+    page_title="Pro-Atlet AI Coach",
+    page_icon="🏆",
+    layout="centered"
+)
 
-# Tasarım - Profesyonel Koyu Tema
+# --- 2. ADIM: API ANAHTARI VE DİĞERLERİ ---
+API_KEY = st.secrets["GEMINI_API_KEY"]
+
+# Tasarım - Profesyonel Koyu Tema (Buradan sonrası aynı devam ediyor...)
+st.markdown("""
+    <style>
 st.markdown("""
     <style>
     .main { background-color: #0e1117; color: #ffffff; }
