@@ -4,7 +4,7 @@ import random
 import os
 
 # --- API ANAHTARI ---
-API_KEY = "AIzaSyAOruEBUqlrSuE03BTiEP5I-yQaoVX7zYU"
+API_KEY = st.secrets["GEMINI_API_KEY"]
 # --------------------
 
 st.set_page_config(page_title="Pro-Atlet AI Coach", layout="centered")
