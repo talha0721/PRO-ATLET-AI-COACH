@@ -5,8 +5,6 @@ import os
 
 # --- API ANAHTARI ---
 API_KEY = st.secrets["GEMINI_API_KEY"]
-# --------------------
-
 st.set_page_config(page_title="Pro-Atlet AI Coach", layout="centered")
 
 # Tasarım - Profesyonel Koyu Tema
