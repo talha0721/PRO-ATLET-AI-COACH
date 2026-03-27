@@ -1,0 +1,15 @@
+name: Pro-Atlet AI Keep Alive
+
+on:
+  schedule:
+    # Her 15 dakikada bir çalışarak Streamlit sunucusunu "sıcak" tutar.
+    - cron: '*/15 * * * *'
+  workflow_dispatch: # İstersen GitHub üzerinden elle de başlatabilirsin.
+
+jobs:
+  ping_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Ping to Streamlit
+        run: |
+          curl -I https://talha0721-pro-atlet-ai-coach-app-xxxx.streamlit.app
