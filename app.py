@@ -11,9 +11,10 @@ st.set_page_config(
 )
 
 # --- 2. API VE GÜVENLİK ---
+# API anahtarını st.secrets üzerinden güvenli bir şekilde alıyoruz
 API_KEY = st.secrets["GEMINI_API_KEY"]
 
-# --- 3. TASARIM VE STİL (TEK BLOK) ---
+# --- 3. TASARIM VE STİL ---
 st.markdown("""
 <style>
     .main { background-color: #0e1117; color: #ffffff; }
@@ -37,6 +38,7 @@ with col_l:
     st.markdown("<h2 style='text-align:center;'>🦅</h2><p style='text-align:center;color:#aaa;font-size:0.7em;'>GÜÇ</p>", unsafe_allow_html=True)
 
 with col_m:
+    # Görsel kontrolü
     if os.path.exists('hero_athlete.png'):
         st.image('hero_athlete.png', use_container_width=True)
     else:
@@ -74,16 +76,28 @@ if st.button("🔥 SİSTEMİ ÇALIŞTIR VE ANALİZ ET"):
     else:
         with st.spinner('🎯 AI Analiz Ediyor...'):
             try:
+                # Google AI Yapılandırması
                 genai.configure(api_key=API_KEY)
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                # --- DINAMIK MODEL SEÇİCİ ---
+                # Hata almamak için sistemdeki aktif modelleri listeliyoruz
+                available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+                
+                # Eğer gemini-1.5-flash listede varsa onu seç, yoksa listedeki ilk uygun modeli al
+                model_name = "gemini-1.5-flash" if any("gemini-1.5-flash" in m for m in available_models) else available_models[0]
+                
+                model = genai.GenerativeModel(model_name)
+                # ----------------------------
                 
                 prompt = f"""Profesyonel bir spor koçu gibi davran. 
                 Branşlar: {branslar}. Hedef Bölge: {hedef}. Sakatlık: {sakatlik}. Notlar: {ek_not}. 
                 Buna uygun bilimsel temelli bir antrenman programı yaz."""
                 
                 response = model.generate_content(prompt)
+                
                 st.success("✅ ANALİZ TAMAMLANDI")
                 st.markdown("### 📋 Önerilen Reçete")
                 st.markdown(response.text)
+                
             except Exception as e:
-                st.error(f"Sistem Hatası: API Anahtarını kontrol et veya limitleri bekle. (Hata: {e})")
+                st.error(f"Sistem Hatası: {e}")
